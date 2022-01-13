@@ -175,6 +175,7 @@ contract LinearVesting is Ownable {
   mapping (uint256 => uint256) private _totalBalances;
   mapping (uint256 => address) private _benficiaries;
   mapping (uint256 => address) private _vestTokenAddrs;
+  mapping (address => mapping (address => mapping (address => bool))) private isMinting;
   uint256 private curScheduleID = 0;
 
   function beneficiary(uint256 scheduleID) public view returns (address) {
@@ -230,6 +231,8 @@ contract LinearVesting is Ownable {
     require (time > 0, "LinearVesting: Vesting duration time must be bigger than zero.");
     IERC20 token = IERC20(tokenAddr);
     uint256 balance = token.balanceOf(_msgSender());
+    console.log("isMinting is %s", isMinting[_msgSender()][toAddr][tokenAddr]);
+    require (isMinting[_msgSender()][toAddr][tokenAddr] == false, "LinearVesting: Same transaction is running.");
     require (balance > 0, "LinearVesting: Vesting amount must be bigger than zero.");
 
     token.transferFrom(_msgSender(), address(this), balance);
@@ -239,6 +242,7 @@ contract LinearVesting is Ownable {
     _benficiaries[curScheduleID] = toAddr;
     _vestTokenAddrs[curScheduleID] = tokenAddr;
     curScheduleID ++;
+    isMinting[_msgSender()][toAddr][tokenAddr] = true;
   } 
 
 }

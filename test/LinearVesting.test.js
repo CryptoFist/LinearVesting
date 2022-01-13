@@ -37,6 +37,27 @@ describe('LinearVesting contract', function () {
         }
         assert.equal(isError, true);
       });
+
+      it ('Double Minting should be faile', async function() {
+        let isError = false;
+        try {
+          linearVesting.mint(linteCoin.address, addr1.address, time);
+          linearVesting.mint(linteCoin.address, addr1.address, time);
+        } catch (e) {
+          isError = true;
+        }
+        assert.equal(isError, true);
+      });
+
+      it ('Mint function that has exceed amoutn should be failed', async function() {
+        let isError = false;
+        try {
+          const balance = linteCoin.balanceOf()
+        } catch (e) {
+          isError = true;
+        }
+        assert.equal(isError, true);
+      });
     });
 
     describe ('After mint, param checking', function () {
