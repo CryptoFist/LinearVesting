@@ -78,9 +78,7 @@ contract LinearVesting is Ownable, ReentrancyGuard {
 
     token.transferFrom(_msgSender(), address(this), balance);
     
-    //uint256 transferedAmount = recipientBalance - token.balanceOf(address(this));
-    uint256 updatedBalance = token.balanceOf(address(this));
-    uint256 transferedAmount = updatedBalance.sub(recipientBalance, "LinearVesting: sub operator overflow");
+    uint256 transferedAmount = token.balanceOf(address(this)) - recipientBalance;
     console.log("transferedAmount is %s", transferedAmount);
     _totalBalances[curScheduleID] = transferedAmount;
     _starts[curScheduleID] = block.timestamp;
