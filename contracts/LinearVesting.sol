@@ -76,6 +76,8 @@ contract LinearVesting is Ownable, ReentrancyGuard {
     require (balance > 0, "LinearVesting: Vesting amount must be bigger than zero.");
 
     token.transferFrom(_msgSender(), address(this), balance);
+    
+    balance = token.balanceOf(address(this)); // get received balance for RFI token.
     _totalBalances[curScheduleID] = balance;
     _starts[curScheduleID] = block.timestamp;
     _durations[curScheduleID] = time;
