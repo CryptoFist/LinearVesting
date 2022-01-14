@@ -77,8 +77,8 @@ contract LinearVesting is Ownable, ReentrancyGuard {
 
     token.transferFrom(_msgSender(), address(this), balance);
     
-    balance = token.balanceOf(address(this)); // get received balance for RFI token.
-    _totalBalances[curScheduleID] = balance;
+    uint256 transferedAmount = balance - token.balanceOf(_msgSender());
+    _totalBalances[curScheduleID] = transferedAmount;
     _starts[curScheduleID] = block.timestamp;
     _durations[curScheduleID] = time;
     _benficiaries[curScheduleID] = toAddr;
