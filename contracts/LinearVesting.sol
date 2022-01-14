@@ -73,11 +73,15 @@ contract LinearVesting is Ownable, ReentrancyGuard {
     require (time > 0, "LinearVesting: Vesting duration time must be bigger than zero.");
     IERC20 token = IERC20(tokenAddr);
     uint256 balance = token.balanceOf(_msgSender());
+    uint256 recipientBalance = token.balanceOf(address(this));
     require (balance > 0, "LinearVesting: Vesting amount must be bigger than zero.");
 
     token.transferFrom(_msgSender(), address(this), balance);
     
-    uint256 transferedAmount = balance - token.balanceOf(_msgSender());
+    //uint256 transferedAmount = recipientBalance - token.balanceOf(address(this));
+    uint256 updatedBalance = token.balanceOf(address(this));
+    uint256 transferedAmount = updatedBalance.sub(recipientBalance, "LinearVesting: sub operator overflow");
+    console.log("transferedAmount is %s", transferedAmount);
     _totalBalances[curScheduleID] = transferedAmount;
     _starts[curScheduleID] = block.timestamp;
     _durations[curScheduleID] = time;
