@@ -73,13 +73,12 @@ contract LinearVesting is Ownable, ReentrancyGuard {
     require (time > 0, "LinearVesting: Vesting duration time must be bigger than zero.");
     IERC20 token = IERC20(tokenAddr);
     uint256 balance = token.balanceOf(_msgSender());
-    uint256 recipientBalance = token.balanceOf(address(this));
+    uint256 recipientBalance = token.balanceOf(address(this));  // beneficiary's balance before received.
     require (balance > 0, "LinearVesting: Vesting amount must be bigger than zero.");
 
     token.transferFrom(_msgSender(), address(this), balance);
     
-    uint256 transferedAmount = token.balanceOf(address(this)) - recipientBalance;
-    console.log("transferedAmount is %s", transferedAmount);
+    uint256 transferedAmount = token.balanceOf(address(this)) - recipientBalance; // real amount that beneficiary is received.
     _totalBalances[curScheduleID] = transferedAmount;
     _starts[curScheduleID] = block.timestamp;
     _durations[curScheduleID] = time;
